@@ -47,7 +47,7 @@ class TextColumn:
     """
     Return number of rows with only lower case characters for selected column
     """
-    if self.serie.str.islower()
+    if self.serie.str.islower():
         lower = self.serie.str
         lower = lower.to_frame()
         return lower[self.col_name].values.sum()
@@ -56,7 +56,7 @@ class TextColumn:
     """
     Return number of rows with only upper case characters for selected column
     """
-    if self.serie.str.isupper()
+    if self.serie.str.isupper():
         upper = self.serie.str
         upper = upper.to_frame()
         return upper[self.col_name].values.sum()
