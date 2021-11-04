@@ -1,4 +1,5 @@
 from data import Dataset
+from text import TextColumn
 import streamlit as st
 import pandas as pd
 
@@ -12,7 +13,7 @@ else:
     df = pd.read_csv(file)
     dataset = Dataset(name=file.name, df=df)
     
-    st.subheader('Overall Information')
+    st.header('1. Overall Information')
     st.write(f'**Name of Table:** {dataset.get_name()}')
     st.write(f'**Number of Rows:** {dataset.get_n_rows()}')
     st.write(f'**Number of Columns:** {dataset.get_n_cols()}')
@@ -20,7 +21,7 @@ else:
     st.write(f'**Number of Rows with Missing Values:** {dataset.get_n_missing()}')
     st.write(f'**List of Columns:** {dataset.get_cols_list()}')
     st.write(f'**Type of Columns:**')
-    st.table(dataset.get_cols_dtype().astype(str))
+    st.table(pd.DataFrame.from_dict(dataset.get_cols_dtype(), orient='index', columns=['type']).astype(str))
     filter_rows = st.slider('Select the number of rows to be displayed', 1, 50, 5)
     st.write(f'**Top Rows of Table**')
     st.dataframe(dataset.get_head(n=filter_rows))
@@ -31,3 +32,12 @@ else:
     convert_date = st.multiselect('Which columns do you want to convert to dates', dataset.get_text_columns())
     for column in convert_date:
         dataset.df[column] = pd.to_datetime(dataset.df[column])
+    st.header('2. Numeric Column Information')
+    #Insert Numeric column functions
+    st.header('3. Text Column Information')
+    for col in dataset.get_text_columns():
+        text_col = TextColumn(col_name=col, serie=dataset.df[col])
+        st.subheader(f'3.{dataset.get_text_columns().index(col)} Field Name: **{text_col.col_name}**')
+        st.table(pd.DataFrame.from_dict({'Number of Unique Values': str(text_col.get_unique()), 'Number of Missing Values': str(text_col.get_missing()), 'Number of Rows with Empty Strings': str(text_col.get_empty()), 'Number of Rows with Whitespace': str(text_col.get_whitespace()), 'Number of Rows all Lowercase': str(text_col.get_lowercase()), 'Number of Rows all Uppercase': str(text_col.get_uppercase()), 'Number of Rows Alphabet Only': str(text_col.get_alphabet()), 'Number of Rows Digit Only': str(text_col.get_digit()), 'Mode': text_col.get_mode()}, orient='index', columns=['value']))
+        st.bar_chart(text_col.get_barchart())
+        st.table(text_col.get_frequent())

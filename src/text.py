@@ -47,19 +47,15 @@ class TextColumn:
     """
     Return number of rows with only lower case characters for selected column
     """
-    if self.serie.str.islower():
-        lower = self.serie.str
-        lower = lower.to_frame()
-        return lower[self.col_name].values.sum()
+    
+    return self.serie.str.islower().sum()
      
   def get_uppercase(self):
     """
     Return number of rows with only upper case characters for selected column
     """
-    if self.serie.str.isupper():
-        upper = self.serie.str
-        upper = upper.to_frame()
-        return upper[self.col_name].values.sum()
+    
+    return self.serie.str.isupper().sum()
       
   def get_alphabet(self):
     """
@@ -97,6 +93,7 @@ class TextColumn:
     Return the Pandas dataframe containing the occurrences and percentage of the top 20 most frequent values
     """
     freq_val = self.serie.value_counts().nlargest(n=20)
-    freq_val1 = self.serie.value_counts(normalize=True).nlargest(n=20) * 100
-    freq_val = pd.DataFrame({'Value':freq_val.index, 'Occurance':freq_val.values, 'Percentage':freq_val1.values})
+    freq_val1 = self.serie.value_counts(normalize=True).nlargest(n=20)
+    freq_val = pd.DataFrame({'Value':freq_val.index, 'Occurrence':freq_val.values, 'Percentage':freq_val1.values})
+
     return freq_val
