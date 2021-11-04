@@ -46,15 +46,13 @@ class TextColumn:
   def get_lowercase(self):
     """
     Return number of rows with only lower case characters for selected column
-    """
-    
+    """    
     return self.serie.str.islower().sum()
      
   def get_uppercase(self):
     """
     Return number of rows with only upper case characters for selected column
-    """
-    
+    """    
     return self.serie.str.isupper().sum()
       
   def get_alphabet(self):
