@@ -38,7 +38,7 @@ class Dataset:
     """
       Return dictionary with column name as keys and data type as values
     """
-    return pd.DataFrame(self.df.dtypes, columns=['Data Type'])
+    return self.df.dtypes.to_dict()
 
   def get_n_duplicates(self):
     """
@@ -84,7 +84,7 @@ class Dataset:
     """
     df_types = pd.DataFrame(self.df.dtypes, columns=['Data Type'])
 
-    return df_types[df_types['Data Type'].isin(['object', 'bool', 'category'])].index.values.tolist()
+    return self.df.select_dtypes(include=object).columns.values.tolist()
 
   def get_date_columns(self):
     """
