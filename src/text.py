@@ -95,4 +95,5 @@ class TextColumn:
     freq_val = self.serie.value_counts().nlargest(n=20)
     freq_val1 = self.serie.value_counts(normalize=True).nlargest(n=20)
     freq_val = pd.DataFrame({'Value':freq_val.index, 'Occurrence':freq_val.values, 'Percentage':freq_val1.values})
+
     return freq_val
