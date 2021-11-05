@@ -74,15 +74,13 @@ class Dataset:
     """
       Return list column names of numeric type from loaded dataset
     """
-    df_types = pd.DataFrame(self.df.dtypes, columns=['Data Type'])
 
-    return df_types[df_types['Data Type'].isin(['float64', 'int64'])].index.values.tolist()
+    return self.df.select_dtypes(include=['float64', 'int64']).columns.values.tolist()
 
   def get_text_columns(self):
     """
       Return list column names of text type from loaded dataset
     """
-    df_types = pd.DataFrame(self.df.dtypes, columns=['Data Type'])
 
     return self.df.select_dtypes(include=object).columns.values.tolist()
 
@@ -90,7 +88,6 @@ class Dataset:
     """
       Return list column names of datetime type from loaded dataset
     """
-    df_types = pd.DataFrame(self.df.dtypes, columns=['Data Type'])
 
-    return df_types[df_types['Data Type'].isin(['datetime64[ns]'])].index.values.tolist()
+    return self.df.select_dtypes(include=['datetime']).columns.values.tolist()
 

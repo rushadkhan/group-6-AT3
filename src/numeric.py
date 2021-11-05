@@ -2,9 +2,7 @@
 import streamlit as st
 from dataclasses import dataclass
 import pandas as pd
-
-pip install altair
-import altair as alt
+import numpy as np
 
 
 @dataclass
@@ -35,64 +33,58 @@ class NumericColumn:
     """
     Return number of occurrence of 0 value for selected column
     """
-    return self.(serie == 0).sum()
+    return (self.serie == 0).sum()
 
   def get_negatives(self):
     """
     Return number of negative values for selected column
     """
-    return self.(serie ['funded_amnt_inv'] <0).any()
+    return (self.serie <0).sum()
 
   def get_mean(self):
     """
     Return the average value for selected column
     """
-    return self.serie[['funded_amnt']].mean()
+    return self.serie.mean()
 
   def get_std(self):
     """
     Return the standard deviation value for selected column
     """
-    return self.serie[['funded_amnt']].std()
+    return self.serie.std()
   
   def get_min(self):
     """
     Return the minimum value for selected column
     """
-    return self.serie[['funded_amnt', 'funded_amnt_inv', 'int_rate',
-       'installment', 'annual_inc', 'dti', 'delinq_2yrs', 'fico_range_low',
-       'fico_range_high', 'inq_last_6mths']].min()
+    return self.serie.min()
 
   def get_max(self):
     """
     Return the maximum value for selected column
     """
-    return self.serie[['funded_amnt', 'funded_amnt_inv', 'int_rate',
-       'installment', 'annual_inc', 'dti', 'delinq_2yrs', 'fico_range_low',
-       'fico_range_high', 'inq_last_6mths']].max()
+    return self.serie.max()
 
   def get_median(self):
     """
     Return the median value for selected column
     """
-    return self.serie[['funded_amnt', 'funded_amnt_inv', 'int_rate',
-       'installment', 'annual_inc', 'dti', 'delinq_2yrs', 'fico_range_low',
-       'fico_range_high', 'inq_last_6mths']].median()
+    return self.serie.median()
 
   def get_histogram(self):
     """
     Return the generated histogram for selected column
     """
-    alt.data_transformers.disable_max_rows()
-    return self.alt.Chart(serie).mark_bar().encode(
-    x = alt.X('id', bin=alt.Bin(maxbins=50)),
-    y = 'funded_amnt'
-)
+    hist_values = np.histogram(self.serie.dropna().values, bins=50)[0]
+    return hist_values
+    
 
   def get_frequent(self):
     """
     Return the Pandas dataframe containing the occurrences and percentage of the top 20 most frequent values
     """
-    return self.serie[['funded_amnt', 'funded_amnt_inv', 'int_rate',
-       'installment', 'annual_inc', 'dti', 'delinq_2yrs', 'fico_range_low',
-       'fico_range_high', 'inq_last_6mths']].count()
+    
+    freq_val = self.serie.value_counts().nlargest(n=20)
+    freq_val1 = self.serie.value_counts(normalize=True).nlargest(n=20)
+    freq_val = pd.DataFrame({'Value':freq_val.index, 'Occurrence':freq_val.values, 'Percentage':freq_val1.values})
+    return freq_val

@@ -1,4 +1,5 @@
 from data import Dataset
+from numeric import NumericColumn
 from text import TextColumn
 import streamlit as st
 import pandas as pd
@@ -33,7 +34,12 @@ else:
     for column in convert_date:
         dataset.df[column] = pd.to_datetime(dataset.df[column])
     st.header('2. Numeric Column Information')
-    #Insert Numeric column functions
+    for col in dataset.get_numeric_columns():
+        num_col = NumericColumn(col_name=col, serie=dataset.df[col])
+        st.subheader(f'2.{dataset.get_numeric_columns().index(col)} Field Name: **{num_col.col_name}**')
+        st.table(pd.DataFrame.from_dict({'Number of Unique Values': num_col.get_unique(), 'Number of Rows with Missing Values': num_col.get_missing(), 'Number of Rows with 0': num_col.get_zeros(), 'Number of Rows with Negative Values': num_col.get_negatives(), 'Average Value': num_col.get_mean(), 'Standard Deviation Value': num_col.get_std(), 'Minimum Value': num_col.get_min(), 'Maximum Value': num_col.get_max(), 'Median Value': num_col.get_median()}, orient='index', columns=['value']))
+        st.bar_chart(num_col.get_histogram())
+        st.table(num_col.get_frequent())
     st.header('3. Text Column Information')
     for col in dataset.get_text_columns():
         text_col = TextColumn(col_name=col, serie=dataset.df[col])
