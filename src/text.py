@@ -40,7 +40,7 @@ class TextColumn:
     """
     Return number of rows with only whitespaces for selected column
     """
-    whitespace = self.serie.str.fullmatch(r"\s*").sum()
+    whitespace = self.serie.str.isspace().sum()
     return whitespace
   
   def get_lowercase(self):
