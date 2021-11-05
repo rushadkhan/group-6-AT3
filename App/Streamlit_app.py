@@ -8,12 +8,14 @@ import pandas as pd
 st.title('Data Explorer Tool')
 file = st.file_uploader("Upload file", type=['csv'])
 
+#This if/else statement avoids an error appearing before the user uploads a file.
 if not file:
     st.write('Please upload a CSV file to begin')
 else:
     df = pd.read_csv(file)
     dataset = Dataset(name=file.name, df=df)
     
+    #Overall Information
     st.header('1. Overall Information')
     st.write(f'**Name of Table:** {dataset.get_name()}')
     st.write(f'**Number of Rows:** {dataset.get_n_rows()}')
@@ -33,6 +35,8 @@ else:
     convert_date = st.multiselect('Which columns do you want to convert to dates', dataset.get_text_columns())
     for column in convert_date:
         dataset.df[column] = pd.to_datetime(dataset.df[column])
+    
+    #Numeric column section
     st.header('2. Numeric Column Information')
     for col in dataset.get_numeric_columns():
         num_col = NumericColumn(col_name=col, serie=dataset.df[col])
@@ -40,6 +44,8 @@ else:
         st.table(pd.DataFrame.from_dict({'Number of Unique Values': num_col.get_unique(), 'Number of Rows with Missing Values': num_col.get_missing(), 'Number of Rows with 0': num_col.get_zeros(), 'Number of Rows with Negative Values': num_col.get_negatives(), 'Average Value': num_col.get_mean(), 'Standard Deviation Value': num_col.get_std(), 'Minimum Value': num_col.get_min(), 'Maximum Value': num_col.get_max(), 'Median Value': num_col.get_median()}, orient='index', columns=['value']))
         st.bar_chart(num_col.get_histogram())
         st.table(num_col.get_frequent())
+    
+    #Text column Information
     st.header('3. Text Column Information')
     for col in dataset.get_text_columns():
         text_col = TextColumn(col_name=col, serie=dataset.df[col])
